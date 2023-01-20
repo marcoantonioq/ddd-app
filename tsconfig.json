@@ -15,7 +15,7 @@
     "outDir": "dist",
     "paths": {
       "@types": ["./src/types/index"],
-      "@product/*": ["./src/modules/product/*"]
+      "@modules/*": ["./src/modules/*"]
     }
   }
 }
