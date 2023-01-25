@@ -1,6 +1,6 @@
 import Express, { Express as IExpress } from "express";
 import { Logger } from "types-ddd";
-import { Module } from "./types";
+import { Module } from "../../types";
 import express from "express";
 import bodyParser from "body-parser";
 
@@ -8,7 +8,7 @@ export class Server {
   private constructor() {}
 
   static build(routes: Array<Module>): Server {
-    if (!Server.instance) Server.instance = Express();
+    if (!Server._app) Server._app = Express();
     Server.applyMiddleware(express.json);
     Server.applyMiddleware(bodyParser.json);
     Server.applyRoutes(routes);
@@ -22,24 +22,23 @@ export class Server {
         controller
       ) as [];
       methods.forEach((method) => {
-        Server.instance.use(controller[method]);
+        Server._app.use(controller[method]);
       });
     });
     return Server;
   }
 
   public static applyMiddleware(middleware: any): void {
-    Server.instance.use(middleware());
+    Server._app.use(middleware());
   }
 
-  static start(port: number = 3000): void {
-    if (!Server.instance)
-      return Logger.error("You must build the app before start it.");
-    const callback = () => Logger.info(`Running on port: ${port}`);
-    Server.instance.on("online", callback);
-    Server.instance.listen(port);
-    Server.instance.emit("online");
+  static start(port: number = 8080): void {
+    if (!Server._app) return Logger.error("Falha ao iniciar servidor!");
+    const callback = () => Logger.info(`Executando na porta: ${port}`);
+    Server._app.on("online", callback);
+    Server._app.listen(port);
+    Server._app.emit("online");
   }
 
-  private static instance: IExpress;
+  private static _app: IExpress;
 }

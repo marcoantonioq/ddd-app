@@ -1,0 +1,49 @@
+version: "3.3"
+
+services:
+  db:
+    image: postgres
+    container_name: db
+    restart: always
+    volumes:
+      - database:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env.database
+    networks:
+      - backend
+  sysprint:
+    build: .
+    image: sysprint
+    container_name: sysprint
+    restart: always 
+    depends_on:
+      - db
+    ports:
+      - "80:80"
+      - "631:631"
+      - "135:135"
+      - "136:136"
+      - "137:137"
+      - "138:138"
+      - "139:139"
+      - "445:445"
+    volumes:
+      - ./:/app
+      - cups-logs:/var/log/cups/
+      - cups-config:/etc/cups/
+      - cups-spool:/var/spool/cups/
+      - cups-data:/usr/share/cups/
+      - smb-conf:/etc/samba/
+    stdin_open: true
+    tty: true
+networks:
+  backend:
+volumes:
+  cups-logs: 
+  cups-config:
+  cups-spool:
+  cups-data:
+  smb-conf:
+  database:

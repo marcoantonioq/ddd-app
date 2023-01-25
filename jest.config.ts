@@ -1,17 +1,15 @@
-process.env.TZ = 'UTC';
+const { pathsToModuleNameMapper } = require("ts-jest");
+const { compilerOptions } = require("./tsconfig.json");
 
-export default {
-  clearMocks: true,
-  collectCoverage: true,
-  coverageDirectory: "./../coverage",
-  coverageProvider: "v8",
-  preset: 'ts-jest',
-  verbose: true,
-  rootDir: './src',
-  testEnvironment: 'node',
+module.exports = {
+  preset: "ts-jest",
+  testEnvironment: "node",
   testRegex: [".+\\.spec\\.ts$"],
-  moduleNameMapper: {
-		'@product/(.*)': '<rootDir>/modules/product/$1',
-		'@types': '<rootDir>/types/index',
-	},
+  roots: ["<rootDir>/src"],
+  transform: {
+    "^.+\\.tsx?$": "ts-jest",
+  },
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
+    prefix: "<rootDir>",
+  }),
 };
